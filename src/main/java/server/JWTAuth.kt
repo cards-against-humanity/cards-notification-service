@@ -33,7 +33,6 @@ interface UserAuthData {
 
 private fun parseCookies(cookies: String): Map<String, List<String>> {
     val namedCookieList = cookies.split(";").map { s -> s.trim() }
-
     val cookieMap: MutableMap<String, MutableList<String>> = HashMap()
 
     namedCookieList.forEach { cookie ->
@@ -50,9 +49,9 @@ private fun parseCookies(cookies: String): Map<String, List<String>> {
     return cookieMap
 }
 
-fun SocketIOClient.verifyUser(jwtVerifier: JWTVerifier): UserAuthData {
+fun SocketIOClient.verifyUser(secret: String): UserAuthData {
     val cookiesString = this.handshakeData.httpHeaders["Cookie"]!!
     val cookies = parseCookies(cookiesString)
-    var token = String(Base64.decodeBase64(cookies["session"]!![0]))
-    return jwtVerifier.validate(token)
+    var token = String(Base64.decodeBase64(cookies["session"]!![0])).replace("\"", "")
+    return JWTVerifier(secret).validate(token)
 }

@@ -6,11 +6,12 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
 import org.springframework.context.annotation.ComponentScan
-import route.user.UserController
+import route.user.EventController
+
 
 @EnableAutoConfiguration(exclude = [MongoAutoConfiguration::class])
 @SpringBootApplication
-@ComponentScan(basePackageClasses = [UserController::class, SwaggerConfig::class])
+@ComponentScan(basePackageClasses = [EventController::class, SwaggerConfig::class, Beans::class])
 open class Main {
     companion object {
         @JvmStatic
