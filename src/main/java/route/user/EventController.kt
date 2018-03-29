@@ -5,12 +5,13 @@ import io.swagger.annotations.ApiResponse
 import io.swagger.annotations.ApiResponses
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
+import server.socketio.EventServer
 
 @RestController
-class UserController {
+class EventController(eventServer: EventServer) {
 
-    @RequestMapping(value = "/user/{id}", method = [RequestMethod.GET])
-    @ApiOperation(value = "Get a user")
+    @RequestMapping(value = "event/user/{id}", method = [RequestMethod.POST])
+    @ApiOperation(value = "Push data to user")
     @ApiResponses(
             ApiResponse(code = 200, message = "Endpoint successfully executed")
     )
