@@ -2,7 +2,6 @@ package server.socketio
 
 import com.corundumstudio.socketio.Configuration
 import com.corundumstudio.socketio.SocketIOServer
-import server.JWTVerifier
 import server.verifyUser
 import java.util.*
 
@@ -26,7 +25,7 @@ private fun strapServer(server: SocketIOServer, secret: String) {
                 println("A user has connected! oAuth ID: ${userData.oAuthId}, oAuth Provider: ${userData.oAuthProvider}")
                 val encodedOAuthID = Base64.getEncoder().encodeToString(userData.oAuthId.toByteArray())
                 val encodedOAuthProvider = Base64.getEncoder().encodeToString(userData.oAuthProvider.toByteArray())
-                client.joinRoom("${encodedOAuthID} ${encodedOAuthProvider}")
+                client.joinRoom("$encodedOAuthID $encodedOAuthProvider")
             } catch (e: Exception) {
                 e.printStackTrace()
             }
@@ -40,13 +39,13 @@ private fun strapServer(server: SocketIOServer, secret: String) {
 }
 
 private class SocketIOEventServer(private val socketIOServer: SocketIOServer) : EventServer {
-    override fun sendEvent(oAuthId: String, oAuthProvider: String, eventName: String, eventData: String) {
+    override fun sendEvent(oAuthId: String, oAuthProvider: String, eventName: String, eventData: Any) {
         val encodedOAuthID = Base64.getEncoder().encodeToString(oAuthId.toByteArray())
         val encodedOAuthProvider = Base64.getEncoder().encodeToString(oAuthProvider.toByteArray())
-        socketIOServer.getRoomOperations("${encodedOAuthID} ${encodedOAuthProvider}").sendEvent(eventName, eventData)
+        socketIOServer.getRoomOperations("$encodedOAuthID $encodedOAuthProvider").sendEvent(eventName, eventData)
     }
 }
 
 interface EventServer {
-    fun sendEvent(oAuthId: String, oAuthProvider: String, eventName: String, eventData: String)
+    fun sendEvent(oAuthId: String, oAuthProvider: String, eventName: String, eventData: Any)
 }
