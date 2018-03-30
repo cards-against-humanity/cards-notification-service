@@ -5,7 +5,7 @@ import io.swagger.annotations.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import server.socketio.EventServer
-import server.UserAuthData
+import server.auth.UserAuthData
 import server.UserFetcher
 
 @RestController

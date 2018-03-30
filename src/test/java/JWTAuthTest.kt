@@ -2,7 +2,7 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.Test
-import server.JWTVerifier
+import server.auth.JWTVerifier
 import java.util.*
 import kotlin.test.assertEquals
 
