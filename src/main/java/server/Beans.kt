@@ -15,8 +15,12 @@ open class Beans {
 
     @Bean
     open fun getJWTVerifier(args: Args): JWTVerifier {
-        println("SECRET: ${args.jwtSecret}")
         return JWTVerifier(args.jwtSecret)
+    }
+
+    @Bean
+    open fun getUserFetcher(args: Args): UserFetcher {
+        return UserFetcher(args.apiUrl, args.apiPort)
     }
 
     @Bean
