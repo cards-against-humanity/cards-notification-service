@@ -5,7 +5,7 @@ import com.corundumstudio.socketio.SocketIOServer
 import java.util.*
 import server.auth.JWTVerifier
 
-class SocketIOEventServer(val port: Int, val secret: String) : EventServer {
+class SocketIOEventServer(port: Int, secret: String) : EventServer {
     private val socketIOServer: SocketIOServer
 
     init {
