@@ -4,16 +4,12 @@ import com.auth0.jwt.JWT
 import com.auth0.jwt.algorithms.Algorithm
 import com.corundumstudio.socketio.SocketIOClient
 import org.apache.commons.codec.binary.Base64
-import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
 class JWTVerifier(private val password: String) {
     fun validate(token: String): UserAuthData {
         val token = JWT.require(Algorithm.HMAC256(password)).build().verify(token)
-        if (token.expiresAt !== null && token.expiresAt.before(Date())) {
-            throw Exception("Token has expired")
-        }
         val oAuthIdClaim = token.claims["oAuthId"]
         val oAuthProviderClaim = token.claims["oAuthProvider"]
         if (oAuthIdClaim?.asString() == null || oAuthProviderClaim?.asString() == null) {
