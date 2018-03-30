@@ -41,7 +41,7 @@ class EventControllerTest {
     @Test
     fun noDataInRequest() {
         userFetcher.setUser("1", "1234", "google")
-        val request = mockMvc.perform(post("/event/user/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest)
+        mockMvc.perform(post("/event/user/1").contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest)
     }
 
     @Test
