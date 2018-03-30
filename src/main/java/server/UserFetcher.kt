@@ -3,12 +3,13 @@ package server
 import com.fasterxml.jackson.databind.ObjectMapper
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import server.auth.UserAuthData
 
 interface UserFetcher {
     fun getById(userId: String): UserAuthData
 }
 
-class APIUserFetcher(private val apiHost: String, private val apiPort: Int) : UserFetcher {
+class ApiUserFetcher(private val apiHost: String, private val apiPort: Int) : UserFetcher {
     override fun getById(userId: String): UserAuthData {
         val request = Request.Builder()
                 .url("http://$apiHost:$apiPort/user/$userId")

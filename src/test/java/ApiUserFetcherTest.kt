@@ -4,10 +4,10 @@ import org.junit.jupiter.api.Test
 import org.mockserver.integration.ClientAndServer
 import org.mockserver.model.HttpRequest.request
 import org.mockserver.model.HttpResponse.response
-import server.UserFetcher
+import server.ApiUserFetcher
 import kotlin.test.assertEquals
 
-class UserFetcherTest {
+class ApiUserFetcherTest {
     companion object {
         private val mockServer: ClientAndServer = ClientAndServer.startClientAndServer(8080)
 
@@ -53,20 +53,20 @@ class UserFetcherTest {
 
     @Test
     fun getValidUser() {
-        val userData = UserFetcher("localhost", 8080).getById(userId)
+        val userData = ApiUserFetcher("localhost", 8080).getById(userId)
         assertEquals(oAuthId, userData.oAuthId)
         assertEquals(oAuthProvider, userData.oAuthProvider)
     }
 
     @Test
     fun getInvalidUser() {
-        val e = assertThrows(Exception::class.java) { UserFetcher("localhost", 8080).getById(fakeUserId) }
+        val e = assertThrows(Exception::class.java) { ApiUserFetcher("localhost", 8080).getById(fakeUserId) }
         assertEquals(e.message, "User does not exist")
     }
 
     @Test
     fun apiError() {
-        val e = assertThrows(Exception::class.java) { UserFetcher("localhost", 8080).getById(errorUserId) }
+        val e = assertThrows(Exception::class.java) { ApiUserFetcher("localhost", 8080).getById(errorUserId) }
         assertEquals(e.message, "An error occured fetching user from the api")
     }
 }
