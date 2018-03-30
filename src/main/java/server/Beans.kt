@@ -4,7 +4,7 @@ import org.springframework.boot.ApplicationArguments
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import server.socketio.EventServer
-import server.socketio.createEventServer
+import server.socketio.SocketIOEventServer
 
 @Configuration
 open class Beans {
@@ -20,6 +20,6 @@ open class Beans {
 
     @Bean
     open fun getEventServer(args: Args): EventServer {
-        return createEventServer(args.socketIOPort, args.jwtSecret)
+        return SocketIOEventServer(args.socketIOPort, args.jwtSecret)
     }
 }
