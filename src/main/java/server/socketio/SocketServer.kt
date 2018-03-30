@@ -2,8 +2,8 @@ package server.socketio
 
 import com.corundumstudio.socketio.Configuration
 import com.corundumstudio.socketio.SocketIOServer
-import server.verifyUser
 import java.util.*
+import server.auth.JWTVerifier
 
 
 fun createEventServer(port: Int, secret: String): EventServer {
@@ -21,7 +21,7 @@ private fun strapServer(server: SocketIOServer, secret: String) {
     server.addConnectListener { client ->
         run {
             try {
-                val userData = client.verifyUser(secret)
+                val userData = JWTVerifier(secret).validate(client)
                 println("A user has connected! oAuth ID: ${userData.oAuthId}, oAuth Provider: ${userData.oAuthProvider}")
                 val encodedOAuthID = Base64.getEncoder().encodeToString(userData.oAuthId.toByteArray())
                 val encodedOAuthProvider = Base64.getEncoder().encodeToString(userData.oAuthProvider.toByteArray())
