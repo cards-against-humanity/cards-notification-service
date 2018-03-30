@@ -5,12 +5,11 @@ import io.swagger.annotations.*
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.*
 import server.socketio.EventServer
-import server.Args
 import server.UserAuthData
 import server.UserFetcher
 
 @RestController
-class EventController(private val eventServer: EventServer, private val args: Args, private val userFetcher: UserFetcher) {
+class EventController(private val eventServer: EventServer, private val userFetcher: UserFetcher) {
 
     @RequestMapping(value = "event/user/{userId}", method = [RequestMethod.POST])
     @ApiOperation(value = "Push data to user")
