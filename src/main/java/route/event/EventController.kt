@@ -1,4 +1,4 @@
-package route.user
+package route.event
 
 import com.fasterxml.jackson.annotation.JsonProperty
 import io.swagger.annotations.*
