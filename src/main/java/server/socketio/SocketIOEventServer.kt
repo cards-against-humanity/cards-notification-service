@@ -44,7 +44,7 @@ private fun strapServer(server: SocketIOServer, secret: String) {
             }
         }
     }
-    server.addDisconnectListener { client ->
+    server.addDisconnectListener { _ ->
         run {
             println("A user has disconnected!")
         }
