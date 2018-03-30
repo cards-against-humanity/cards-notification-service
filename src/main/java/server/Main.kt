@@ -6,7 +6,7 @@ import org.springframework.boot.autoconfigure.EnableAutoConfiguration
 import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.boot.autoconfigure.mongo.MongoAutoConfiguration
 import org.springframework.context.annotation.ComponentScan
-import route.user.EventController
+import route.event.EventController
 
 
 @EnableAutoConfiguration(exclude = [MongoAutoConfiguration::class])
