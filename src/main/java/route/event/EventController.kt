@@ -18,7 +18,7 @@ class EventController(private val eventServer: EventServer, private val userFetc
             ApiResponse(code = 404, message = "User does not exist"),
             ApiResponse(code = 400, message = "Bad request body")
     )
-    fun postEvent(@PathVariable userId: String, @RequestBody event: EventRequest): ResponseEntity<Int> {
+    fun postEvent(@PathVariable userId: String, @RequestBody eventData: EventRequest): ResponseEntity<Int> {
         val userData: UserAuthData
         try {
             userData = userFetcher.getById(userId)
@@ -26,10 +26,10 @@ class EventController(private val eventServer: EventServer, private val userFetc
             e.printStackTrace()
             return ResponseEntity.notFound().build()
         }
-        eventServer.sendEvent(userData.oAuthId, userData.oAuthProvider, event.eventName, event.eventData)
+        eventServer.sendEvent(userData.oAuthId, userData.oAuthProvider, eventData.event, eventData.data)
         return ResponseEntity.noContent().build()
     }
 
 }
 
-data class EventRequest(@JsonProperty("event") val eventName: String, @JsonProperty("data") val eventData: Any)
+data class EventRequest(@JsonProperty("event") val event: String, @JsonProperty("data") val data: Any)
