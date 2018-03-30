@@ -44,8 +44,13 @@ private class SocketIOEventServer(private val socketIOServer: SocketIOServer) : 
         val encodedOAuthProvider = Base64.getEncoder().encodeToString(oAuthProvider.toByteArray())
         socketIOServer.getRoomOperations("$encodedOAuthID $encodedOAuthProvider").sendEvent(eventName, eventData)
     }
+
+    override fun stop() {
+        socketIOServer.stop()
+    }
 }
 
 interface EventServer {
     fun sendEvent(oAuthId: String, oAuthProvider: String, eventName: String, eventData: Any)
+    fun stop()
 }
