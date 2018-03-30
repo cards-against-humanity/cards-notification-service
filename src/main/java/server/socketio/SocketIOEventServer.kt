@@ -5,11 +5,6 @@ import com.corundumstudio.socketio.SocketIOServer
 import java.util.*
 import server.auth.JWTVerifier
 
-interface EventServer {
-    fun sendEvent(oAuthId: String, oAuthProvider: String, eventName: String, eventData: Any)
-    fun stop()
-}
-
 class SocketIOEventServer(val port: Int, val secret: String) : EventServer {
     private val socketIOServer: SocketIOServer
 
