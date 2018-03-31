@@ -9,7 +9,8 @@ import kotlin.test.assertEquals
 
 class ApiUserFetcherTest {
     companion object {
-        private val mockServer: ClientAndServer = ClientAndServer.startClientAndServer(8080)
+        private const val port = 8888
+        private val mockServer: ClientAndServer = ClientAndServer.startClientAndServer(port)
 
         @JvmStatic
         @AfterAll
@@ -53,20 +54,20 @@ class ApiUserFetcherTest {
 
     @Test
     fun getValidUser() {
-        val userData = ApiUserFetcher("localhost", 8080).getById(userId)
+        val userData = ApiUserFetcher("localhost", port).getById(userId)
         assertEquals(oAuthId, userData.oAuthId)
         assertEquals(oAuthProvider, userData.oAuthProvider)
     }
 
     @Test
     fun getInvalidUser() {
-        val e = assertThrows(Exception::class.java) { ApiUserFetcher("localhost", 8080).getById(fakeUserId) }
+        val e = assertThrows(Exception::class.java) { ApiUserFetcher("localhost", port).getById(fakeUserId) }
         assertEquals(e.message, "User does not exist")
     }
 
     @Test
     fun apiError() {
-        val e = assertThrows(Exception::class.java) { ApiUserFetcher("localhost", 8080).getById(errorUserId) }
+        val e = assertThrows(Exception::class.java) { ApiUserFetcher("localhost", port).getById(errorUserId) }
         assertEquals(e.message, "An error occured fetching user from the api")
     }
 }
