@@ -129,6 +129,12 @@
             <artifactId>mockserver-client-java</artifactId>
             <version>3.10.8</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.socket</groupId>
+            <artifactId>socket.io-client</artifactId>
+            <version>1.0.0</version>
+        </dependency>
     </dependencies>
 
     <build>
