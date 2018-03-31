@@ -15,7 +15,7 @@ open class Beans {
 
     @Bean
     open fun getUserFetcher(args: Args): UserFetcher {
-        return ApiUserFetcher(args.apiUrl, args.apiPort)
+        return BufferedUserFetcher(ApiUserFetcher(args.apiUrl, args.apiPort), 10000)
     }
 
     @Bean
