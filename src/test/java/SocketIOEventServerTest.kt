@@ -38,24 +38,84 @@ class SocketIOEventServerTest {
         val eventData = "some_data"
 
         var messageReceived = false
-        var isConnected = false
 
-        val socket = IO.socket("http://localhost")
-        socket.setCookie("session", getEncodedUserJWT(oAuthId, oAuthProvider, secret))
-        socket.on(Socket.EVENT_CONNECT, { _ -> isConnected = true })
-        socket.on(Socket.EVENT_DISCONNECT, { _ -> isConnected = false })
-        socket.on(eventName, { data ->
+        val socket = TestableSocket("http://localhost")
+        socket.setSessionCookie(oAuthId, oAuthProvider, secret)
+        socket.on(eventName, Emitter.Listener { data ->
             assertEquals(eventData, data[0])
             messageReceived = true
         })
         socket.connect()
-
-        waitUntil { isConnected }
-        Thread.sleep(500)
         server.sendEvent(oAuthId, oAuthProvider, eventName, eventData)
         waitUntil { messageReceived }
         socket.disconnect()
-        waitUntil { !isConnected }
+    }
+
+    @Test
+    fun sendsEventsOnlyToSpecificUser() {
+        val socketOneOAuthId = "122234"
+        val socketOneOAuthProvider = "google"
+        val socketTwoOAuthId = "543982"
+        val socketTwoOAuthProvider = "google"
+        val eventName = "test_event"
+        val eventData = "some_data"
+
+        var socketOneMessageReceived = false
+        var socketTwoMessageReceived = false
+
+        val socketOne = TestableSocket("http://localhost")
+        val socketTwo = TestableSocket("http://localhost")
+        socketOne.setSessionCookie(socketOneOAuthId, socketOneOAuthProvider, secret)
+        socketTwo.setSessionCookie(socketTwoOAuthId, socketTwoOAuthProvider, secret)
+        socketOne.on(eventName, Emitter.Listener { data ->
+            assertEquals(eventData, data[0])
+            socketOneMessageReceived = true
+        })
+        socketTwo.on(eventName, Emitter.Listener { data ->
+            assertEquals(eventData, data[0])
+            socketTwoMessageReceived = true
+        })
+        socketOne.connect()
+        socketTwo.connect()
+
+        server.sendEvent(socketOneOAuthId, socketOneOAuthProvider, eventName, eventData)
+        waitUntil { socketOneMessageReceived }
+        Thread.sleep(500)
+        assert(!socketTwoMessageReceived)
+        socketOne.disconnect()
+        socketTwo.disconnect()
+    }
+
+    @Test
+    fun sendsEventToMultipleClientsBelongingToSameUser() {
+        val socketOAuthId = "122234"
+        val socketOAuthProvider = "google"
+        val eventName = "test_event"
+        val eventData = "some_data"
+
+        var socketOneMessageReceived = false
+        var socketTwoMessageReceived = false
+
+        val socketOne = TestableSocket("http://localhost")
+        val socketTwo = TestableSocket("http://localhost")
+        socketOne.setSessionCookie(socketOAuthId, socketOAuthProvider, secret)
+        socketTwo.setSessionCookie(socketOAuthId, socketOAuthProvider, secret)
+        socketOne.on(eventName, Emitter.Listener { data ->
+            assertEquals(eventData, data[0])
+            socketOneMessageReceived = true
+        })
+        socketTwo.on(eventName, Emitter.Listener { data ->
+            assertEquals(eventData, data[0])
+            socketTwoMessageReceived = true
+        })
+        socketOne.connect()
+        socketTwo.connect()
+
+        server.sendEvent(socketOAuthId, socketOAuthProvider, eventName, eventData)
+        waitUntil { socketOneMessageReceived }
+        waitUntil { socketTwoMessageReceived }
+        socketOne.disconnect()
+        socketTwo.disconnect()
     }
 }
 
@@ -85,5 +145,35 @@ fun getEncodedUserJWT(oAuthId: String, oAuthProvider: String, secret: String): S
 fun waitUntil(f: () -> Boolean) {
     while(!f()) {
         Thread.yield()
+    }
+}
+
+private class TestableSocket(host: String) {
+    private val socket = IO.socket("http://localhost")
+    private var isConnected = false
+
+    init {
+        socket.on(Socket.EVENT_CONNECT, { _ -> isConnected = true })
+        socket.on(Socket.EVENT_DISCONNECT, { _ -> isConnected = false })
+    }
+
+    fun setSessionCookie(oAuthId: String, oAuthProvider: String, secret: String) {
+        socket.setCookie("session", getEncodedUserJWT(oAuthId, oAuthProvider, secret))
+    }
+
+    fun connect() {
+        socket.connect()
+        waitUntil { isConnected }
+        Thread.sleep(500)
+    }
+
+    fun disconnect() {
+        socket.disconnect()
+        waitUntil { !isConnected }
+        Thread.sleep(500)
+    }
+
+    fun on(eventName: String, f: Emitter.Listener) {
+        socket.on(eventName, f)
     }
 }
