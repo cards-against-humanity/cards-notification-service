@@ -9,7 +9,7 @@ import kotlin.test.assertEquals
 
 class ApiUserFetcherTest {
     companion object {
-        private const val port = 8888
+        private const val port = 8080
         private val mockServer: ClientAndServer = ClientAndServer.startClientAndServer(port)
 
         @JvmStatic
