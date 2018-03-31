@@ -17,7 +17,7 @@ class JWTVerifier(private val secret: String) {
     }
 
     fun validate(socket: SocketIOClient): UserAuthData {
-        val cookiesString = socket.handshakeData.httpHeaders["Cookie"]!!
+        val cookiesString = socket.handshakeData.httpHeaders["Cookie"]!! // TODO - Test this line and throw exception with appropriate error message
         val cookies = parseCookies(cookiesString)
         var token = String(Base64.decodeBase64(cookies["session"]!![0])).replace("\"", "")
         return this.validate(token)
@@ -27,7 +27,8 @@ class JWTVerifier(private val secret: String) {
 private data class JWTUserAuthData(override val oAuthId: String, override val oAuthProvider: String) : UserAuthData
 
 private fun parseCookies(cookies: String): Map<String, List<String>> {
-    val namedCookieList = cookies.split(";").map { s -> s.trim() }
+    var namedCookieList = cookies.split(";").map { s -> s.trim() }
+    namedCookieList = namedCookieList.filter { cookie -> !cookie.isBlank() }
     val cookieMap: MutableMap<String, MutableList<String>> = HashMap()
 
     namedCookieList.forEach { cookie ->
