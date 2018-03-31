@@ -15,7 +15,8 @@ import kotlin.test.assertEquals
 class SocketIOEventServerTest {
     companion object {
         private const val secret = "super_secret_password_13579"
-        private var server = SocketIOEventServer(80, secret)
+        private const val socketHost = "http://localhost:8080"
+        private var server = SocketIOEventServer(8080, secret)
 
         @JvmStatic
         @AfterAll
@@ -27,7 +28,7 @@ class SocketIOEventServerTest {
     @BeforeEach
     fun reset() {
         server.stop()
-        server = SocketIOEventServer(80, secret)
+        server = SocketIOEventServer(8080, secret)
     }
 
     @Test
@@ -39,7 +40,7 @@ class SocketIOEventServerTest {
 
         var messageReceived = false
 
-        val socket = TestableSocket("http://localhost")
+        val socket = TestableSocket(socketHost)
         socket.setSessionCookie(oAuthId, oAuthProvider, secret)
         socket.on(eventName, Emitter.Listener { data ->
             assertEquals(eventData, data[0])
@@ -63,8 +64,8 @@ class SocketIOEventServerTest {
         var socketOneMessageReceived = false
         var socketTwoMessageReceived = false
 
-        val socketOne = TestableSocket("http://localhost")
-        val socketTwo = TestableSocket("http://localhost")
+        val socketOne = TestableSocket(socketHost)
+        val socketTwo = TestableSocket(socketHost)
         socketOne.setSessionCookie(socketOneOAuthId, socketOneOAuthProvider, secret)
         socketTwo.setSessionCookie(socketTwoOAuthId, socketTwoOAuthProvider, secret)
         socketOne.on(eventName, Emitter.Listener { data ->
@@ -96,8 +97,8 @@ class SocketIOEventServerTest {
         var socketOneMessageReceived = false
         var socketTwoMessageReceived = false
 
-        val socketOne = TestableSocket("http://localhost")
-        val socketTwo = TestableSocket("http://localhost")
+        val socketOne = TestableSocket(socketHost)
+        val socketTwo = TestableSocket(socketHost)
         socketOne.setSessionCookie(socketOAuthId, socketOAuthProvider, secret)
         socketTwo.setSessionCookie(socketOAuthId, socketOAuthProvider, secret)
         socketOne.on(eventName, Emitter.Listener { data ->
@@ -149,7 +150,7 @@ fun waitUntil(f: () -> Boolean) {
 }
 
 private class TestableSocket(host: String) {
-    private val socket = IO.socket("http://localhost")
+    private val socket = IO.socket(host)
     private var isConnected = false
 
     init {
