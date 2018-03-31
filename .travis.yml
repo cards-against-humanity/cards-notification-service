@@ -4,9 +4,8 @@ jdk:
   - oraclejdk8
 
 script:
-  - mvn clean package
-  - mvn cobertura:cobertura
-  - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+  - mvn clean deploy
+  - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
   - docker images
 
 services:
