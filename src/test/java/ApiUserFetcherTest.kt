@@ -62,12 +62,12 @@ class ApiUserFetcherTest {
     @Test
     fun getInvalidUser() {
         val e = assertThrows(Exception::class.java) { ApiUserFetcher("localhost", port).getById(fakeUserId) }
-        assertEquals(e.message, "User does not exist")
+        assertEquals("User does not exist", e.message)
     }
 
     @Test
     fun apiError() {
         val e = assertThrows(Exception::class.java) { ApiUserFetcher("localhost", port).getById(errorUserId) }
-        assertEquals(e.message, "An error occured fetching user from the api")
+        assertEquals("An error occured fetching user from the api", e.message)
     }
 }
